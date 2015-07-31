@@ -1,13 +1,3 @@
-cols = 0..7
-rows = 0..7
-
-queens = []
-
-cols.each do |col|
-  first_row = [col,0]
-  queens.push(first_row)
-end
-
 
 def show(cols, rows, queens)
   rows.each do |row|
@@ -18,7 +8,7 @@ def show(cols, rows, queens)
           found_queen = true
         end
       end
-      print ( found_queen ? ' Q' : ' x' )
+      print ( found_queen ? ' Q' : ' .' )
     end
     print "\n"
   end
@@ -40,15 +30,44 @@ def solution? (queens)
   return true
 end
 
-def find_solution(queens)
-  queens.each do |queen|
-    cols.each do |col|
-      rows.each do |row|
-        queen = [col,row]
-      end
-    end
+def move_queens? (num, rows, queens)
+  return false if num < 0
+  queen = queens[num]
+  queen[1] += 1
+  if queen[1] > rows.max
+    queen[1] = 0
+    return move_queens?(num-1, rows, queens)
   end
+  return true
 end
 
-show(cols, rows, queens)
-print "Solution? #{solution?(queens)}\n"
+def find_solution? (cols, rows, queens)
+  while ! solution?(queens)
+    if ! move_queens?(cols.max, rows, queens)
+      return false
+    end
+  end
+  return true
+end
+
+cols = 0..8
+rows = 0..8
+
+queens = []
+cols.each do |col|
+  first_row = [col,0]
+  queens.push(first_row)
+end
+
+count = 0
+while find_solution?(cols, rows, queens)
+  show(cols, rows, queens)
+  print "\n"
+  count += 1
+  if ! move_queens?(cols.max, rows, queens)
+    break
+  end
+end
+print "I found #{count} solutions! :-)"
+
+# print "Solution? #{solution?(queens)}\n"
